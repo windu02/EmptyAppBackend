@@ -1,3 +1,14 @@
-node_modules
+build/*
+dist/*
+tmp/*
+node_modules/*
+src/**~
+*~
 .idea
-database/connection_infos.json
+scripts/core/connection_infos.json
+doc/
+scripts/core/backend_config.json
+package-bak.json
+package-tmp.json
+heroku
+herokuDBInit
