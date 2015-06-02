@@ -42,6 +42,9 @@ module.exports = function (grunt) {
       dbInitDatabase : {
         files: 	[{expand: true, cwd: 'database', src: ['**'], dest: 'buildDBInit/database/'}]
       },
+      dbInitBackendConfigInfosFile: {
+        files: 	[{'buildDBInit/backend_config.json': 'scripts/core/backend_config.json'}]
+      },
       dbInitFiles : {
         files: 	[{expand: true, cwd: 'dbInitFiles', src: ['**'], dest: 'buildDBInit/dbInitFiles/'}]
       },
@@ -193,7 +196,10 @@ module.exports = function (grunt) {
     grunt.task.run(['copy:buildDatabase', 'copy:buildBackendConfigInfosFile', 'typescript:build']);
   });
 
-  grunt.registerTask('develop', ['build', 'express:build', 'watch']);
+  grunt.registerTask('develop', function() {
+    grunt.task.run(['build', 'express:build', 'watch']);
+
+  });
 
   grunt.registerTask('dist', function () {
     grunt.task.run(['clean:dist']);
@@ -207,18 +213,17 @@ module.exports = function (grunt) {
     grunt.task.run(['copy:testDatabase', 'copy:testBackendConfigInfosFile', 'typescript:test', 'mochaTest:test']);
   });
 
-
   grunt.registerTask('dbinit', function () {
     grunt.task.run(['clean:build']);
 
-    grunt.task.run(['copy:buildConnectionInfosFile', 'copy:buildBackendConfigInfosFile', 'copy:dbInitFiles', 'typescript:dbinit']);
-  });//TODO : To check !
+    grunt.task.run(['copy:dbInitDatabase', 'copy:dbInitBackendConfigInfosFile', 'copy:dbInitFiles', 'typescript:dbinit']);
+  });
 
   grunt.registerTask('heroku', function () {
     grunt.task.run(['clean:heroku']);
 
     grunt.task.run(['dist', 'copy:heroku', 'copy:herokuProcfile', 'copy:herokuGitignore']);
-  });//TODO : To check !
+  });
 
   grunt.registerTask('doc', ['clean:doc', 'yuidoc']);
 
