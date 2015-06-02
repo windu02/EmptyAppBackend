@@ -11,7 +11,6 @@ var http : any = require("http");
 var express : any = require("express");
 var bodyParser : any = require("body-parser");
 var multer : any = require('multer');
-var connection = require('./database/connection.js');
 var relations = require('./database/relations.js');
 
 /**
@@ -69,17 +68,6 @@ class Server {
 	 */
 	private _buildDatabase() {
 		relations.init();
-
-		if(false) {
-			connection.sequelize.drop()
-				.then(function() {
-					Logger.info("All tables dropped !");
-					connection.sequelize.sync({force: true})
-						.then(function () {
-							Logger.info("Base created !");
-						});
-				});
-		}
 	}
 
 	/**

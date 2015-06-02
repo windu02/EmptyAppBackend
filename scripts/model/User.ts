@@ -280,7 +280,22 @@ class User extends ModelItf {
 
 	 */
 	create(successCallback : Function, failCallback : Function) {
-		//this.createObject(User, this.toJSONObject(), successCallback, failCallback);
+		var self = this;
+
+		if(this.getId() == null) {
+			UserSchema.create(this.toJSONObject())
+				.then(function (user) {
+					var uObject = User.fromJSONObject(user.dataValues);
+					self._id = uObject.getId();
+
+					successCallback(uObject);
+				})
+				.error(function (error) {
+					failCallback(error);
+				});
+		} else {
+			failCallback(new ModelException("User already exists."));
+		}
 	}
 
 	/**
@@ -316,27 +331,31 @@ class User extends ModelItf {
 	update(successCallback : Function, failCallback : Function) {
 		var self = this;
 
-		// search for known ids
-		UserSchema.findById(this._id)
-			.then(function(user) {
+		if(this.getId() != null) {
+			// search for known ids
+			UserSchema.findById(this.getId())
+				.then(function (user) {
 
-				user.updateAttributes(self.toJSONObject())
-					.then(function() {
+					user.updateAttributes(self.toJSONObject())
+						.then(function () {
 
-						user.save()
-							.then(function() {
-								successCallback(self);
-							})
-							.error(function(error) {
-								failCallback(error);
-							});
+							user.save()
+								.then(function () {
+									successCallback(self);
+								})
+								.error(function (error) {
+									failCallback(error);
+								});
 
-					})
-					.error(function(error) {
-						failCallback(error);
-					});
+						})
+						.error(function (error) {
+							failCallback(error);
+						});
 
-			});
+				});
+		} else {
+			failCallback(new ModelException("You need to create User before to update it."));
+		}
 	}
 
 	/**
@@ -348,7 +367,27 @@ class User extends ModelItf {
 
 	 */
 	delete(successCallback : Function, failCallback : Function) {
-		//return ModelItf.deleteObject(User, this.getId(), successCallback, failCallback);
+		var self = this;
+
+		if(this.getId() != null) {
+			UserSchema.findById(this.getId())
+				.then(function (user) {
+
+					user.destroy()
+						.then(function () {
+							var destroyId = self.getId();
+							self._id = null;
+
+							successCallback({"id" : destroyId});
+						})
+						.error(function (error) {
+							failCallback(error);
+						});
+
+				});
+		} else {
+			failCallback(new ModelException("You need to create User before to delete it..."));
+		}
 	}
 
 	/**

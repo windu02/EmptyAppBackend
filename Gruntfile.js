@@ -46,7 +46,7 @@ module.exports = function (grunt) {
         files: 	[{'buildDBInit/backend_config.json': 'scripts/core/backend_config.json'}]
       },
       dbInitFiles : {
-        files: 	[{expand: true, cwd: 'dbInitFiles', src: ['**'], dest: 'buildDBInit/dbInitFiles/'}]
+        files: 	[{expand: true, cwd: 'CleanAndInitDatabase/dbInitFiles', src: ['**'], dest: 'buildDBInit/dbInitFiles/'}]
       },
 
       heroku: {
@@ -92,7 +92,7 @@ module.exports = function (grunt) {
 
       dbinit: {
         src: [
-          'scripts/CleanAndInitDatabase.ts'
+          'CleanAndInitDatabase/CleanAndInitDatabase.ts'
         ],
         dest: 'buildDBInit/CleanAndInitDatabase.js',
         options: {
@@ -177,12 +177,12 @@ module.exports = function (grunt) {
 //                                    clean task
 // ---------------------------------------------
     clean: {
-//      package: ['package-bak.json', 'package-tmp.json'],
       build: ['build/'],
       heroku: ['heroku/'],
       dist: ['dist/'],
-      doc: ['doc'],
-      test: ['buildTests/']
+      doc: ['doc/'],
+      test: ['buildTests/'],
+      buildDBInit: ['buildDBInit/']
     }
 // ---------------------------------------------
   });
@@ -198,7 +198,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('develop', function() {
     grunt.task.run(['build', 'express:build', 'watch']);
-
   });
 
   grunt.registerTask('dist', function () {
@@ -214,7 +213,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('dbinit', function () {
-    grunt.task.run(['clean:build']);
+    grunt.task.run(['clean:buildDBInit']);
 
     grunt.task.run(['copy:dbInitDatabase', 'copy:dbInitBackendConfigInfosFile', 'copy:dbInitFiles', 'typescript:dbinit']);
   });

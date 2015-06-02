@@ -7,6 +7,7 @@ class ModelException implements Error {
 	message:string;
 
 	constructor(message: string) {
+		this.name = "ModelException";
 		this.message = message;
 	}
 }
